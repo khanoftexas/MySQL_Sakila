@@ -56,20 +56,45 @@ add column description blob null;
 select * from actor;
 
 -- 3b. Very quickly you realize that entering descriptions for each actor is too much effort. Delete the description column.
+alter table actor
+drop column description;
+
+select * from actor;
+
 -- 4a. List the last names of actors, as well as how many actors have that last name.
+select last_name 'Last Name', Count(last_name) 'Actor Count' from actor
+group by last_name;
+
 -- 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
+select last_name 'Last Name', Count(last_name) 'Actor Count' from actor
+group by last_name having count(last_name) >= 2;
+
 -- 4c. The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. Write a query to fix the record.
+select * from actor where first_name = 'GROUCHO' and last_name = 'WILLIAMS';
+update actor set first_name='HARPO' where first_name = 'GROUCHO' and last_name = 'WILLIAMS';
+select * from actor where first_name = 'HARPO' and last_name = 'WILLIAMS';
+
+
 -- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO.
+update actor set first_name='GROUCHO' where first_name = 'HARPO';
+select * from actor where first_name = 'GROUCHO';
 
 -- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
-
-
 -- Hint: https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
 
-
+SHOW CREATE TABLE address;
 
 -- 6a. Use JOIN to display the first and last names, as well as the address, of each staff member. Use the tables staff and address:
+select * from staff;
+select * from address;
+
+select s.first_name 'First Name', s.last_name 'Last Name', a.address 'Address'
+from staff s
+inner join address a 
+on s.address_id = a.address_id;
+
 -- 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment.
+
 -- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
 -- 6d. How many copies of the film Hunchback Impossible exist in the inventory system?
 -- 6e. Using the tables payment and customer and the JOIN command, list the total paid by each customer. List the customers alphabetically by last name:
